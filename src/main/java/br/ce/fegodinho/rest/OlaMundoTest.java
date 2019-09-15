@@ -37,7 +37,7 @@ public class OlaMundoTest {
 		ValidatableResponse validacao = response.then();
 		validacao.statusCode(200);
 		
-		get("http://restapi.wcaquino.me/ola").then().statusCode(201);
+		get("http://restapi.wcaquino.me/ola").then().statusCode(200);
 		
 		given()
 			//Pré condições
@@ -63,6 +63,27 @@ public class OlaMundoTest {
 		assertThat(impares, containsInAnyOrder(3,5,1,7,9));
 		assertThat(impares, hasItem(1));
 		assertThat(impares, hasItems(1,5));
+		
+		assertThat("Maria", is(not("João")));
+		assertThat("Maria", not("João"));
+		assertThat("Joaquina", anyOf(is("Maria"), is("Joaquina")));
+		assertThat("Joaquina", allOf(startsWith("Joa"), endsWith("ina"), containsString("qui")));
+	}
+	
+	@Test
+	public void devoValidarBody() {
+		given()
+		//Pré condições
+	.when()
+		//Ação
+		.get("http://restapi.wcaquino.me/ola")
+	.then()
+		//Assertivas
+		.statusCode(200)
+		.body(Matchers.is("Ola Mundo!"))
+		.body(containsString("Mundo"))
+		.body(is(not(nullValue())))
+		;
 	}
 
 }
