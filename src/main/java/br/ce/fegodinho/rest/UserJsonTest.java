@@ -5,7 +5,6 @@ import static org.hamcrest.Matchers.*;
 
 import java.util.Arrays;
 
-import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -97,6 +96,33 @@ public class UserJsonTest {
 			.body("age[1]", is(25))
 			.body("filhos.name", hasItem(Arrays.asList("Zezinho", "Luizinho")))
 			.body("salary", contains(1234.5678f, 2500, null))
+			;
+	}
+	
+	@Test
+	public void devoFazerVerificacoesAvancadas() {
+		given()
+		.when()
+			.get("http://restapi.wcaquino.me/users")
+		.then()
+			.statusCode(200)
+			.body("$", hasSize(3))
+			.body("age.findAll{it <= 25}.size()", is(2))
+			.body("age.findAll{it <= 25 && it > 20}.size()", is(1))
+			.body("findAll{it.age <= 25 && it.age > 20}.name", hasItem("Maria Joaquina")) //retorna uma lista com os nomes
+			.body("findAll{it.age <= 25}.name[0]", is("Maria Joaquina")) //retorna o primeiro
+			.body("findAll{it.age <= 25}.name[-1]", is("Ana Júlia")) //retorna o ultimo
+			.body("find{it.age <= 25}.name", is("Maria Joaquina")) //retorna o primeiro registro que atender a busca
+			.body("findAll{it.name.contains('n')}.name", hasItems("Maria Joaquina","Ana Júlia"))
+			.body("findAll{it.name.length() > 10}.name", hasItems("João da Silva", "Maria Joaquina"))
+			.body("name.collect{it.toUpperCase()}", hasItems("MARIA JOAQUINA"))
+			.body("name.findAll{it.startsWith('Maria')}.collect{it.toUpperCase()}", hasItems("MARIA JOAQUINA"))
+			.body("name.findAll{it.startsWith('Maria')}.collect{it.toUpperCase()}.toArray()", allOf(arrayContaining("MARIA JOAQUINA"), arrayWithSize(1)))
+			.body("age.collect{it * 2}", hasItems(60, 50, 40)) //multiplica todas as idades por 2
+			.body("id.max()", is(3)) //maior ID
+			.body("salary.min()", is(1234.5678f)) //menor salario
+			.body("salary.findAll{it != null}sum()", is(closeTo(3734.5678f, 0.001))) //adiciona margem de erro de 0.001
+			.body("salary.findAll{it != null}sum()", allOf(greaterThan(3000d), lessThan(5000d)))
 			;
 	}
 
