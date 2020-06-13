@@ -68,8 +68,30 @@ public class UserXMLTest {
 		;
 		Assert.assertEquals(2, nomes.size());
 		Assert.assertEquals("Maria Joaquina".toUpperCase(), nomes.get(0).toString().toUpperCase());
-		Assert.assertTrue("ANA JULIA".equalsIgnoreCase(nomes.get(1).toString()));
-		
+		Assert.assertTrue("ANA JULIA".equalsIgnoreCase(nomes.get(1).toString()));		
+	}
+	
+	@Test
+	public void devoFazerPesquisasAvancadasComXPath() {
+		given()
+		.when()
+			.get("http://restapi.wcaquino.me/usersXML")
+		.then()
+		.statusCode(200)		
+		.body(hasXPath("count(/users/user)", is("3")))
+		.body(hasXPath("/users/user[@id=1]"))
+		.body(hasXPath("//user[@id=2]"))
+		.body(hasXPath("//name[text() = 'Luizinho']/../../name", is("Ana Julia"))) //retorna o nome da mae do filho = Luizinho
+		.body(hasXPath("//name[text() = 'Ana Julia']/following-sibling::filhos", allOf(containsString("Zezinho"),containsString("Luizinho")))) //retorna os filhos da mae = Ana Julia
+		.body(hasXPath("/users/user/name", is("João da Silva")))
+		.body(hasXPath("//name", is("João da Silva")))
+		.body(hasXPath("/users/user[2]/name", is("Maria Joaquina")))//retorna o segundo
+		.body(hasXPath("/users/user[last()]/name", is("Ana Julia")))//retorna o ultimo registro
+		.body(hasXPath("count(/users/user/name[contains(.,'n')])", is("2")))//retorna nomes que contenham a letra N
+		.body(hasXPath("//user[age < 24]/name", is("Ana Julia")))
+		.body(hasXPath("//user[age > 20 and age < 30]/name", is("Maria Joaquina")))
+		.body(hasXPath("//user[age > 20][age < 30]/name", is("Maria Joaquina")))
+		;		
 	}
 
 }
