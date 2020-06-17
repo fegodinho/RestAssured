@@ -10,27 +10,44 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import io.restassured.RestAssured;
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.builder.ResponseSpecBuilder;
+import io.restassured.filter.log.LogDetail;
 import io.restassured.internal.path.xml.NodeImpl;
+import io.restassured.specification.RequestSpecification;
+import io.restassured.specification.ResponseSpecification;
 
 public class UserXMLTest {
+	
+	public static RequestSpecification reqSpec;
+	public static ResponseSpecification resSpec;
 	
 	@BeforeClass
 	public static void setup() {
 		RestAssured.baseURI = "http://restapi.wcaquino.me";
 		//RestAssured.port = 80;
-		//RestAssured.basePath = "";		
+		//RestAssured.basePath = "";	
+		
+		RequestSpecBuilder reqBuilder = new RequestSpecBuilder();
+		reqBuilder.log(LogDetail.ALL);
+		reqSpec = reqBuilder.build();
+		
+		ResponseSpecBuilder resBuilder = new ResponseSpecBuilder();
+		resBuilder.expectStatusCode(200);
+		resSpec = resBuilder.build();
+		
+		RestAssured.requestSpecification = reqSpec;
+		RestAssured.responseSpecification = resSpec;
 	}
 	
 	@Test
 	public void devoTrabalharComXML() {		
 		
 		given()
-			.log().all()
 		.when()
 			.get("/usersXML/3")
 		.then()
-		.statusCode(200)
-		
+		//.statusCode(200)		
 		.rootPath("user")
 		.body("name", is("Ana Julia"))
 		.body("@id", is("3"))
@@ -54,7 +71,7 @@ public class UserXMLTest {
 		.when()
 			.get("/usersXML")
 		.then()
-		.statusCode(200)
+		//.statusCode(200)
 		.body("users.user.size()", is(3))
 		.body("users.user.findAll{it.age.toInteger() <= 25}.size()", is(2))
 		.body("users.user.@id", hasItems("1","2","3"))
