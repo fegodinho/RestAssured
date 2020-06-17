@@ -6,17 +6,28 @@ import static org.hamcrest.Matchers.*;
 import java.util.ArrayList;
 
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import io.restassured.RestAssured;
 import io.restassured.internal.path.xml.NodeImpl;
 
 public class UserXMLTest {
 	
+	@BeforeClass
+	public static void setup() {
+		RestAssured.baseURI = "http://restapi.wcaquino.me";
+		//RestAssured.port = 80;
+		//RestAssured.basePath = "";		
+	}
+	
 	@Test
-	public void devoTrabalharComXML() {
+	public void devoTrabalharComXML() {		
+		
 		given()
+			.log().all()
 		.when()
-			.get("http://restapi.wcaquino.me/usersXML/3")
+			.get("/usersXML/3")
 		.then()
 		.statusCode(200)
 		
@@ -41,7 +52,7 @@ public class UserXMLTest {
 	public void devoFazerPesquisasAvancadasComXML() {
 		given()
 		.when()
-			.get("http://restapi.wcaquino.me/usersXML")
+			.get("/usersXML")
 		.then()
 		.statusCode(200)
 		.body("users.user.size()", is(3))
@@ -60,7 +71,7 @@ public class UserXMLTest {
 	public void devoFazerPesquisasAvancadasComXMLEJava() {
 		ArrayList<NodeImpl> nomes = given()
 		.when()
-			.get("http://restapi.wcaquino.me/usersXML")
+			.get("/usersXML")
 		.then()
 		.statusCode(200)		
 		.extract().path("users.user.name.findAll{it.toString().contains('n')}");
@@ -75,7 +86,7 @@ public class UserXMLTest {
 	public void devoFazerPesquisasAvancadasComXPath() {
 		given()
 		.when()
-			.get("http://restapi.wcaquino.me/usersXML")
+			.get("/usersXML")
 		.then()
 		.statusCode(200)		
 		.body(hasXPath("count(/users/user)", is("3")))
