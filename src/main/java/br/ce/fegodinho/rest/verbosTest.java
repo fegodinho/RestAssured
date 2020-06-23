@@ -3,6 +3,9 @@ package br.ce.fegodinho.rest;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Test;
 
 import io.restassured.http.ContentType;
@@ -24,6 +27,28 @@ public class verbosTest {
 			.body("id", is(notNullValue()))
 			.body("name", is("Jose"))
 			.body("age", is(50))
+			;
+	}
+	
+	@Test
+	public void deveSalvarUsuarioUsandoMap() {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("name", "Usuario via map");
+		params.put("age", 25);
+		
+		given()
+			.log().all()
+			.contentType("application/json")
+			.body(params)
+		.when()
+			.post("http://restapi.wcaquino.me/users")
+		
+		.then()
+			.log().all()
+			.statusCode(201)
+			.body("id", is(notNullValue()))
+			.body("name", is("Usuario via map"))
+			.body("age", is(25))
 			;
 	}
 	
