@@ -53,6 +53,27 @@ public class verbosTest {
 	}
 	
 	@Test
+	public void deveSalvarUsuarioUsandoObjeto() {
+		
+		User user = new User("Usuario via map", 25);
+		
+		given()
+			.log().all()
+			.contentType("application/json")
+			.body(user)
+		.when()
+			.post("http://restapi.wcaquino.me/users")
+		
+		.then()
+			.log().all()
+			.statusCode(201)
+			.body("id", is(notNullValue()))
+			.body("name", is("Usuario via map"))
+			.body("age", is(25))
+			;
+	}
+	
+	@Test
 	public void naoDeveSalvarUsuarioSemNome() {		
 		given()
 		.log().all()
