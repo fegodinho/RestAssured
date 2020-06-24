@@ -153,6 +153,30 @@ public class verbosTest {
 	}
 	
 	@Test
+	public void deveDeserializarXMLSalvarUsuario() {
+		User user = new User("Usuario XML", 40);
+	
+		User usuarioInserido = given()
+			.log().all()
+			.contentType(ContentType.XML)
+			.body(user)
+		.when()
+			.post("http://restapi.wcaquino.me/usersXML")
+		
+		.then()
+			.log().all()
+			.statusCode(201)
+			.extract().body().as(User.class)
+			;
+		
+		Assert.assertThat(usuarioInserido.getId(), notNullValue());
+		Assert.assertThat(usuarioInserido.getName(), is("Usuario XML"));
+		Assert.assertThat(usuarioInserido.getAge(), is(40));
+		Assert.assertThat(usuarioInserido.getSalary(), nullValue());
+		
+	}
+	
+	@Test
 	public void deveAlterarUsuario() {
 		given()
 			.log().all()
