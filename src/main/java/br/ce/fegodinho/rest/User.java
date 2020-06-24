@@ -1,5 +1,11 @@
 package br.ce.fegodinho.rest;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name="user")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class User {
 	
 	private Long id;
@@ -11,6 +17,10 @@ public class User {
 		super();
 		this.name = name;
 		this.age = age;
+	}
+	
+	public User() {
+		// TODO Auto-generated constructor stub
 	}
 	
 	public Long getId() {
