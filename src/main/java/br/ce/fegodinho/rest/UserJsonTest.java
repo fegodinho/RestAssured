@@ -85,6 +85,7 @@ public class UserJsonTest {
 			;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void deveVerificarListaRaiz() {
 		given()

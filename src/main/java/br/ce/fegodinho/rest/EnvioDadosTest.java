@@ -2,7 +2,6 @@ package br.ce.fegodinho.rest;
 
 import static io.restassured.RestAssured.given;
 
-import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
